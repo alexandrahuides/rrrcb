@@ -1,0 +1,1009 @@
+! Last configuration change at 23:24:16 EET Fri Dec 2 2016 by EEM
+!
+version 15.0
+service nagle
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+service sequence-numbers
+!
+hostname CT01_Constanta_RT_2921
+!
+boot-start-marker
+boot system flash flash0:c2900-universalk9-mz.SPA.150-1.M8.bin
+boot-end-marker
+!
+card type e1 0 1
+logging discriminator NoACLlog mnemonics drops (IPACCESSLOGP)|(CHUNKINVALIDHDR) 
+logging discriminator T11BUG mnemonics drops CHUNKINVALIDHDR 
+logging buffered discriminator NoACLlog 16384
+logging rate-limit all 100 except errors
+no logging console
+logging monitor discriminator T11BUG
+enable secret 5 ***
+!
+aaa new-model
+!
+!
+aaa authentication username-prompt USERLOCAL:
+aaa authentication login default group tacacs+ local-case
+aaa authentication enable default group tacacs+ enable
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local if-authenticated 
+aaa authorization commands 1 default group tacacs+ local if-authenticated 
+aaa authorization commands 15 default group tacacs+ local if-authenticated 
+aaa accounting send stop-record authentication failure
+aaa accounting update periodic 60
+aaa accounting exec default
+ action-type start-stop
+ group tacacs+
+!
+aaa accounting commands 15 default
+ action-type start-stop
+ group tacacs+
+!
+aaa accounting network default
+ action-type start-stop
+ group tacacs+
+!
+aaa accounting connection default
+ action-type start-stop
+ group tacacs+
+!
+aaa accounting system default
+ action-type start-stop
+ group tacacs+
+!
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+clock timezone EET 2
+clock summer-time EET recurring last Sun Mar 3:00 last Sun Oct 4:00
+no network-clock-participate wic 1 
+!
+no ipv6 cef
+no ip source-route
+ip cef
+!
+!
+ip dhcp excluded-address 222.14.1.28
+!
+ip dhcp pool WIRELESS
+   network 222.14.1.16 255.255.255.240
+   option 60 ascii "Cisco AP c1832"
+   option 43 ip 10.208.192.1 
+   default-router 222.14.1.28 
+!
+!
+no ip bootp server
+no ip domain lookup
+ip domain name bcrwan
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+key chain BCR_EIGRP_key_chain
+ key 100
+  key-string 7 ***
+key chain BCR_HSRP_key_chain
+ key 100
+  key-string 7 ***
+!
+crypto pki trustpoint subCA2
+ enrollment retry count 100
+ enrollment retry period 60
+ enrollment mode ra
+ enrollment url http://10.207.247.6:80/certsrv/mscep/mscep.dll
+ serial-number
+ ip-address Loopback 0
+ revocation-check none
+ source interface Loopback0
+ rsakeypair CA2 2048
+ auto-enroll 90 regenerate
+!
+!
+crypto pki certificate chain subCA2
+ certificate 496A351400000000084B
+  308207C9 308205B1 A0030201 02020A49 6A351400 00000008 4B300D06 092A8648 
+  86F70D01 01050500 303F3113 3011060A 09922689 93F22C64 01191603 77616E31 
+  13301106 0A099226 8993F22C 64011916 03626372 31133011 06035504 03130A53 
+  55424341 30374243 52301E17 0D313631 31303231 32343330 345A170D 31383131 
+  30323132 35333034 5A305F31 14301206 03550405 130B4643 5A313335 33373143 
+  4B311930 1706092A 864886F7 0D010908 130A3232 302E3134 2E312E32 312C302A 
+  06092A86 4886F70D 0109020C 1D435430 315F436F 6E737461 6E74615F 52545F32 
+  3932312E 62637277 616E3082 0122300D 06092A86 4886F70D 01010105 00038201 
+  0F003082 010A0282 010100B0 905D8DE9 A0C9824C 8ED89D2C 56A31476 BFF6F20E 
+  1F3C656E D2FDFE4D BEA07F16 4FC9F9C4 33BFFF76 12C53898 012455C9 90639AA4 
+  121D8F8B A17C206D 6481E8D2 3F9E0F92 E39CEA4A C73E580D 630F23B1 2DC0F677 
+  BE00D2AD 7D79B002 8A254591 377CCA13 10C5B3C2 50DE1C2C 5D6C2EBC 5BA65006 
+  7B3527D4 E256A319 292AAD93 5FBDB6CE 980CACF5 F35E3ACA F0F40E49 3BC379B0 
+  DFE1179A B10CC8EF 90F637E2 41E36843 E37D7AD1 B6FE9C88 44DE6C93 6D9EA5D3 
+  64AC7CEC 89A3E986 43AE9BD0 1D96BF1A 989A509F 594FBD73 7D6FD95B AA01711F 
+  58990141 F5CCFC5D FF976517 AAACCD7B 495E94ED 45B8BE11 38A61628 70CDEFF2 
+  DA4F62B7 80CBA0E8 E8462502 03010001 A38203A5 308203A1 300B0603 551D0F04 
+  04030205 A0301D06 03551D0E 04160414 1A48F99D D75B9329 EBC67A1E EC862192 
+  AC5462F4 301F0603 551D2304 18301680 14377507 86C87311 1C599358 1CCD8711 
+  124EB25C 3D308201 5D060355 1D1F0482 01543082 01503082 014CA082 0148A082 
+  01448681 B06C6461 703A2F2F 2F434E3D 53554243 41303742 43522C43 4E3D5355 
+  42434130 37424352 2C434E3D 4344502C 434E3D50 75626C69 63253230 4B657925 
+  32305365 72766963 65732C43 4E3D5365 72766963 65732C43 4E3D436F 6E666967 
+  75726174 696F6E2C 44433D62 63722C44 433D7761 6E3F6365 72746966 69636174 
+  65526576 6F636174 696F6E4C 6973743F 62617365 3F6F626A 65637443 6C617373 
+  3D63524C 44697374 72696275 74696F6E 506F696E 74862B68 7474703A 2F2F6372 
+  6C2E6263 722E726F 2F43412F 43657274 43524C2F 53554243 41303742 43522E63 
+  726C862D 68747470 3A2F2F63 726C6472 2E626372 2E726F2F 43412F43 65727443 
+  524C2F53 55424341 30374243 522E6372 6C863368 7474703A 2F2F7375 62636130 
+  37626372 2E626372 2E77616E 2F436572 74456E72 6F6C6C2F 53554243 41303742 
+  43522E63 726C3082 014C0608 2B060105 05070101 0482013E 3082013A 3081A506 
+  082B0601 05050730 02868198 6C646170 3A2F2F2F 434E3D53 55424341 30374243 
+  522C434E 3D414941 2C434E3D 5075626C 69632532 304B6579 25323053 65727669 
+  6365732C 434E3D53 65727669 6365732C 434E3D43 6F6E6669 67757261 74696F6E 
+  2C44433D 6263722C 44433D77 616E3F63 41436572 74696669 63617465 3F626173 
+  653F6F62 6A656374 436C6173 733D6365 72746966 69636174 696F6E41 7574686F 
+  72697479 30460608 2B060105 05073002 863A6874 74703A2F 2F63726C 2E626372 
+  2E726F2F 43412F41 49412F53 55424341 30374243 522E6263 722E7761 6E5F5355 
+  42434130 37424352 2E637274 30480608 2B060105 05073002 863C6874 74703A2F 
+  2F63726C 64722E62 63722E72 6F2F4341 2F414941 2F535542 43413037 4243522E 
+  6263722E 77616E5F 53554243 41303742 43522E63 72743031 0603551D 110101FF 
+  04273025 821D4354 30315F43 6F6E7374 616E7461 5F52545F 32393231 2E626372 
+  77616E87 04DC0E01 02303C06 092B0601 04018237 1507042F 302D0625 2B060104 
+  01823715 08FA9872 84CC9E7A 83999715 829FDE63 82949F42 378393F0 3D83848E 
+  66020164 02010730 13060355 1D25040C 300A0608 2B060105 05080202 301B0609 
+  2B060104 01823715 0A040E30 0C300A06 082B0601 05050802 02300D06 092A8648 
+  86F70D01 01050500 03820201 00601D02 7B2E55B3 69453A77 442B3E7E BC67872C 
+  8D11BEED 4B0FF195 9421D78D 678A3185 2FE21029 F3A0C7AA 9DC9389D C295AC0C 
+  1DD49FFD F0E05C7D F77637DC 7D832BB7 C0CA3129 14DF6E55 D6DD8122 56DFCD5E 
+  A7076A53 74FE105F E32BED26 F7C86CAA 93F1F600 167BF4EC F9F79B43 FC29A08A 
+  ED1FFA30 A92FDD9E A5310EFB C40BD48B C676A55E 13B49C8E 9C65E6CE CF04FC1A 
+  00506CCE 3DF3E0FA 804E42C3 1C5C83E0 104E9653 07EA89F6 35E861F7 F030DA09 
+  C0A6EBE9 928EFCE2 C3B1BC68 6C6C6215 EA553AD1 316654D4 B1C7F678 9AC5ACF2 
+  682BB1AC 923E788D 0BFF8CF3 8FEB83B0 750EF2EB 2000C16F 589FD3FC EEE36DF3 
+  22C938D0 94BF2321 24612A0F 1A3E91BA E13B39B1 2373F04B 3AC27C6B D9202B43 
+  C06B4DFB A77B55BA 412B281F 9F3623E7 AE963F76 C686C78A ACCEFEB8 CD2A7C35 
+  1EADAC98 513C0EB4 98638D29 81E096BA DA03AF5B 4B61FE51 17863E63 AE3D20B4 
+  8D6F4E90 993C02A6 A1DF60E4 48806137 26A94F2B 0D0153D0 DA53D6C2 59640776 
+  06A8396A D128606E D417CE42 3208EE09 1E0E6279 37CCA359 543FD18E C63F382C 
+  0572E3B4 91FA9640 9EA1E0A6 480F5A1D 0F7AB209 EE263766 6190F95B 3CFE4B1C 
+  0348B16A EA081A5E D6E8FFEF 3D9B3CE1 FD7D08DE 0F3606D0 8396C8EF 5A5611E1 
+  C7F3879E F7E9B87B FCA9B53B 1100B84B 13C7104D B43C40B9 C613B3BB 121549EB 
+  4F2766C6 EC302021 05F858E0 BE
+        quit
+ certificate ca 6108A62C000000000017
+  308207BD 308205A5 A0030201 02020A61 08A62C00 00000000 17300D06 092A8648 
+  86F70D01 01050500 30123110 300E0603 55040313 07424352 524F4F54 301E170D 
+  31343036 32373037 32393436 5A170D32 34303632 37303733 3934365A 303F3113 
+  3011060A 09922689 93F22C64 01191603 77616E31 13301106 0A099226 8993F22C 
+  64011916 03626372 31133011 06035504 03130A53 55424341 30374243 52308202 
+  22300D06 092A8648 86F70D01 01010500 0382020F 00308202 0A028202 0100BDB6 
+  9D3F4D48 9E033045 E00FF588 D5F008C9 C2919516 B8C75FDD D1892387 09ED27A2 
+  C81F31EC 2CB7108B F997FBA4 53D52A55 A7E59515 49D35AE6 C264207E EAFE8591 
+  C8D1551C D795306C 13A9FE42 2E0A7712 0300390C A52D80B9 AF766C04 9C01A9AB 
+  F7F9DDF6 228D3771 82C5AFDA AAB109F2 D91BEB3E F833D085 DC2B8E4A 23E34790 
+  1AC5AF7C F2CB2FBB 671D079E 38A454E3 31031894 7D84991E E280657A 051C425E 
+  528AFF0B D724119B DD2E9167 BD3B01E6 0B0E3789 ACFDD6BA 59FD3AC5 B88EAF1D 
+  93702620 A946C9E8 7FA0043E C9A37588 BD7D996E 1FB10571 B1F4284F 812F1703 
+  3E14241F 2F2B3086 F96F3089 9794CCD5 38365ACB 63D58E89 618B4EBD 359137B4 
+  B08B20E8 54C1A205 F3359B85 7F99AD1D DE5F749A 8A51A75C D60F87F2 BBCC1077 
+  3A328B6C 59227A9B 25BCF1A0 3750B56C 864CBA36 8F024EA5 1291B046 DA75AF15 
+  6ED351EB AD6FC488 21045D14 A9D74478 41D073A9 ED4D526C 73949328 10FF0268 
+  CAC282E5 F2ED491E BAEF50F4 1A424E96 DA5F304D C97BD783 F7A298F8 D8AC3468 
+  F4FF7D05 FF7691FB 951A51F7 72012541 565CE2EA 0EA4E1F1 332F048C 554F9ADC 
+  1B4E128C 9ED5E327 5EA8328C E2F3AFB2 213C6158 B6BC35CB 93B675CA 061F5D89 
+  4569F2AF F1FEBBFF 6C2CD854 14C1805D E1D3B946 2BF5B839 D6EEA524 10710587 
+  871CC66E 61B865B8 B0D5D1E3 8E3CEEDC 70BDFC74 7E7877F1 2F45D366 DB970203 
+  010001A3 8202E630 8202E230 1006092B 06010401 82371501 04030201 00301D06 
+  03551D0E 04160414 37750786 C873111C 5993581C CD871112 4EB25C3D 30190609 
+  2B060104 01823714 02040C1E 0A005300 75006200 43004130 0B060355 1D0F0404 
+  03020186 300F0603 551D1301 01FF0405 30030101 FF301F06 03551D23 04183016 
+  80142863 A449A7C9 85748F4F 10526CBC 32A19691 D8FB3082 011E0603 551D1F04 
+  82011530 82011130 82010DA0 820109A0 82010586 81AC6C64 61703A2F 2F2F434E 
+  3D424352 524F4F54 2C434E3D 62637272 6F6F7463 612C434E 3D434450 2C434E3D 
+  5075626C 69632532 304B6579 25323053 65727669 6365732C 434E3D53 65727669 
+  6365732C 434E3D43 6F6E6669 67757261 74696F6E 2C44433D 6263722C 44433D77 
+  616E3F63 65727469 66696361 74655265 766F6361 74696F6E 4C697374 3F626173 
+  653F6F62 6A656374 436C6173 733D6352 4C446973 74726962 7574696F 6E506F69 
+  6E748628 68747470 3A2F2F63 726C2E62 63722E72 6F2F4341 2F436572 7443524C 
+  2F424352 524F4F54 2E63726C 862A6874 74703A2F 2F63726C 64722E62 63722E72 
+  6F2F4341 2F436572 7443524C 2F424352 524F4F54 2E63726C 30820131 06082B06 
+  01050507 01010482 01233082 011F3081 A206082B 06010505 07300286 81956C64 
+  61703A2F 2F2F434E 3D424352 524F4F54 2C434E3D 4149412C 434E3D50 75626C69 
+  63253230 4B657925 32305365 72766963 65732C43 4E3D5365 72766963 65732C43 
+  4E3D436F 6E666967 75726174 696F6E2C 44433D62 63722C44 433D7761 6E3F6341 
+  43657274 69666963 6174653F 62617365 3F6F626A 65637443 6C617373 3D636572 
+  74696669 63617469 6F6E4175 74686F72 69747930 3A06082B 06010505 07300286 
+  2E687474 703A2F2F 63726C2E 6263722E 726F2F43 412F4149 412F6263 72726F6F 
+  7463615F 42435252 4F4F542E 63727430 3C06082B 06010505 07300286 30687474 
+  703A2F2F 63726C64 722E6263 722E726F 2F43412F 4149412F 62637272 6F6F7463 
+  615F4243 52524F4F 542E6372 74300D06 092A8648 86F70D01 01050500 03820201 
+  00043EFE DD3B50DD 64369FA0 503B9D04 4C70123E B2097132 618FF707 BF445F12 
+  3C7B8E04 55C99C2C AAF5947D 25A6AEC0 3FAF0952 5ABF9064 590B6764 FE15EC0A 
+  38111866 EA104B4A F07281FE F81E1884 E1C9E5D6 407BD441 CA5D8A7C DE560956 
+  F5BCEDF3 432194BB C8CA50D4 41069F9A D4C8D454 90C0F722 D242BFED 7DA5AA00 
+  045A0AE2 4A881054 6B113C49 90C9327B 86CF3CE5 88BBBF96 29F70438 72FD12F5 
+  C518CF96 13481238 A150598C CB9D9A27 8581CDCC 7872110C 254619DE 570D93DE 
+  53B79FD7 265EC905 749D210B 67C8BD63 907BDFF9 6A24C94E DA6235DC F265F2F5 
+  175548EC 26598F48 10A6C554 D933C7B7 830BD2C3 48F02772 CA0920A1 4CFE6343 
+  410113F4 D4AE9D11 565EACFC D54D40C3 ACCDB8DB 7A3C2D2E 32C378EA 02704B81 
+  04953EB4 B6D3FF5C 9631FBDF 16769A46 A6E74CBD 75BBBA2F B77653F8 AC5D8B9E 
+  00F58471 98A16086 EDEFF514 1B40463F 85CB6EF2 90AEE8BA 0EF6B4F6 FA6805E4 
+  E5CB60E2 15851BF9 419B8C6C 56220F37 BC33972C 17073D5B 1266D2D1 387BCC6B 
+  7B4AF7DB FFCE58F5 D5003B8A B18A8A0F 0DE5B1E4 9AFAF38E 97FA543C DE0E008C 
+  6DBE7679 2CFDB31C 3D4BEB96 B225167F F41F2FD1 C6BC3E09 AE1084A0 68A8F28E 
+  EB03D9E5 213AFA8C 6F838739 1765C02F 13F240E1 20F06EA6 D6150B72 3CED4DE5 
+  FF7BAC52 BC3D3753 26AE96AD 3F5D68CF 49A37484 FCDFBA3A BF746E5D 6375A423 D6
+        quit
+voice-card 0
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2921/K9 sn FCZ135371CK
+hw-module pvdm 0/0
+!
+!
+!
+archive
+ log config
+  hidekeys
+username ***
+!
+redundancy
+!
+!
+controller E1 0/1/0
+!
+ip tcp selective-ack
+ip tcp mss 1360
+ip tcp path-mtu-discovery
+!
+class-map match-any voce
+ match  dscp ef 
+ match ip precedence 5 
+class-map match-any D1
+ match ip precedence 3  4  6 
+ match access-group name QoS_D1
+class-map match-any D2
+ match ip precedence 1  2 
+ match access-group name QoS_D2
+!
+!
+policy-map WIFI
+ class class-default
+   police rate 2000000 
+     conform-action transmit 
+     exceed-action drop 
+policy-map BCR_QoS
+ class voce
+    priority percent 45
+  set precedence 5
+ class D1
+    bandwidth remaining percent 60
+     random-detect
+    queue-limit 100 packets
+  set precedence 4
+ class D2
+    bandwidth remaining percent 30
+     random-detect
+    queue-limit 100 packets
+  set precedence 2
+ class class-default
+    bandwidth remaining percent 10
+     random-detect
+policy-map TRAFFIC_QoS_Eth_TER
+ class class-default
+    shape average 20480000
+  service-policy BCR_QoS
+policy-map TRAFFIC_QoS_Eth
+ class class-default
+    shape average 20480000
+  service-policy BCR_QoS
+!
+! 
+!
+crypto isakmp policy 10
+ encr aes 256
+ group 5
+ lifetime 1440
+!
+!
+crypto gdoi group GETBRA
+ identity number 1
+ server address ipv4 10.209.0.251
+ server address ipv4 10.209.1.251
+!
+!
+crypto map GETVPN local-address Loopback0
+crypto map GETVPN 10 gdoi 
+ set group GETBRA
+!
+!
+!
+!
+!
+interface Loopback0
+ description LOOPBACK
+ ip address 220.14.1.2 255.255.255.255
+ !
+!
+interface Loopback20
+ description TKR2_MON
+ ip address 1.3.54.97 255.255.255.255
+ !
+!
+interface Loopback30
+ description TKR3_MON
+ ip address 1.3.54.161 255.255.255.255
+ !
+!
+interface GigabitEthernet0/0
+ description LOCAL LAN
+ dampening
+ no ip address
+ load-interval 30
+ duplex auto
+ speed auto
+ no mop enabled
+ !
+!
+interface GigabitEthernet0/0.3
+ description USERS
+ encapsulation dot1Q 3
+ ip address 223.14.1.252 255.255.255.0
+ ip helper-address 10.207.249.84
+ ip helper-address 10.207.249.85
+ no ip redirects
+ ip directed-broadcast 99
+ no ip proxy-arp
+ ip accounting output-packets
+ ip tcp adjust-mss 1240
+ standby version 2
+ standby 30 ip 223.14.1.250
+ standby 30 priority 50
+ standby 30 preempt delay minimum 180
+ standby 30 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.5
+ description BCR_ALARMA
+ encapsulation dot1Q 5
+ ip address 223.142.1.62 255.255.255.224
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ ip tcp adjust-mss 1240
+ standby version 2
+ standby 5 ip 223.142.1.60
+ standby 5 priority 150
+ standby 5 preempt delay minimum 180
+ standby 5 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.6
+ description ATM
+ encapsulation dot1Q 6
+ ip address 223.142.1.78 255.255.255.240
+ ip access-group ATM_IN in
+ ip access-group ATM_OUT out
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 6 ip 223.142.1.76
+ standby 6 priority 150
+ standby 6 preempt delay minimum 180
+ standby 6 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.7
+ description DVR
+ encapsulation dot1Q 7
+ ip address 223.142.1.94 255.255.255.240
+ ip access-group DVR_IN in
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 7 ip 223.142.1.92
+ standby 7 priority 150
+ standby 7 preempt delay minimum 180
+ standby 7 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.8
+ description CPN_DATA
+ encapsulation dot1Q 8
+ ip address 223.142.1.126 255.255.255.224
+ ip helper-address 10.207.249.84
+ ip helper-address 10.207.249.85
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 8 ip 223.142.1.124
+ standby 8 priority 150
+ standby 8 preempt delay minimum 180
+ standby 8 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.9
+ description CPN_VOIP
+ encapsulation dot1Q 9
+ ip address 223.142.1.158 255.255.255.224
+ ip helper-address 10.207.249.137
+ ip helper-address 10.207.249.138
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 9 ip 223.142.1.156
+ standby 9 priority 150
+ standby 9 preempt delay minimum 180
+ standby 9 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.50
+ description MANAGEMENT_AP
+ encapsulation dot1Q 50
+ ip address 222.14.1.30 255.255.255.240
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ ip tcp adjust-mss 1240
+ standby version 2
+ standby 50 ip 222.14.1.28
+ standby 50 priority 150
+ standby 50 preempt delay minimum 180
+ standby 50 authentication md5 key-chain BCR_HSRP_key_chain
+ service-policy input WIFI
+ service-policy output WIFI
+!
+interface GigabitEthernet0/0.64
+ description VOIP
+ encapsulation dot1Q 64
+ ip address 223.78.1.252 255.255.255.0
+ ip helper-address 10.207.249.137
+ ip helper-address 10.207.249.138
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 64 ip 223.78.1.250
+ standby 64 priority 50
+ standby 64 preempt delay minimum 180
+ standby 64 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.80
+ description DS
+ encapsulation dot1Q 80
+ ip address 223.142.1.190 255.255.255.240
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ standby version 2
+ standby 80 ip 223.142.1.188
+ standby 80 priority 150
+ standby 80 preempt delay minimum 180
+ standby 80 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.95
+ description BCR_LEASING
+ encapsulation dot1Q 95
+ ip address 223.142.1.222 255.255.255.240
+ ip helper-address 10.207.249.54
+ no ip redirects
+ no ip proxy-arp
+ ip accounting output-packets
+ ip tcp adjust-mss 1360
+ no cdp enable
+ standby version 2
+ standby 95 ip 223.142.1.220
+ standby 95 priority 150
+ standby 95 preempt delay minimum 180
+ standby 95 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.96
+ description POS
+ encapsulation dot1Q 96
+ ip address 223.142.1.238 255.255.255.248
+ no ip redirects
+ no ip proxy-arp
+ no cdp enable
+ standby version 2
+ standby 96 ip 223.142.1.236
+ standby 96 priority 150
+ standby 96 preempt delay minimum 180
+ standby 96 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.97
+ description CDS
+ encapsulation dot1Q 97
+ ip address 223.142.1.246 255.255.255.248
+ ip access-group CDS_IN in
+ ip access-group CDS_OUT out
+ no ip redirects
+ no ip proxy-arp
+ no cdp enable
+ standby version 2
+ standby 97 ip 223.142.1.244
+ standby 97 priority 150
+ standby 97 preempt delay minimum 180
+ standby 97 authentication md5 key-chain BCR_HSRP_key_chain
+!
+interface GigabitEthernet0/0.99
+ description High Availability Link to neighboring branch router
+ encapsulation dot1Q 99
+ ip address 223.142.1.254 255.255.255.252
+ no ip redirects
+ no ip proxy-arp
+ ip authentication mode eigrp 2 md5
+ ip authentication key-chain eigrp 2 BCR_EIGRP_key_chain
+!
+interface GigabitEthernet0/1
+ description TELEKOM_VRF_2(standby)
+ dampening
+ bandwidth 20480
+ ip address 172.24.14.2 255.255.255.252
+ ip access-group wan_out out
+ no ip redirects
+ no ip proxy-arp
+ ip mtu 1400
+ load-interval 30
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+ no cdp enable
+ no mop enabled
+ !
+ service-policy output TRAFFIC_QoS_Eth
+!
+interface GigabitEthernet0/2
+ description ROMTELECOM
+ dampening
+ bandwidth 20480
+ ip address 172.36.14.2 255.255.255.252
+ ip access-group wan_out out
+ no ip redirects
+ no ip proxy-arp
+ ip mtu 1400
+ load-interval 30
+ duplex auto
+ speed auto
+ no cdp enable
+ no mop enabled
+ crypto map GETVPN
+ !
+ service-policy output TRAFFIC_QoS_Eth_TER
+!
+!
+router eigrp 2
+ network 172.24.0.0
+ network 172.36.0.0
+ network 220.14.1.0
+ network 223.14.1.0
+ network 223.78.1.0
+ network 223.142.1.0
+ passive-interface default
+ no passive-interface GigabitEthernet0/0.99
+ eigrp router-id 220.14.1.2
+!
+router bgp 65500
+ bgp router-id 220.14.1.2
+ bgp log-neighbor-changes
+ bgp deterministic-med
+ bgp graceful-restart restart-time 120
+ bgp graceful-restart stalepath-time 360
+ bgp graceful-restart
+ neighbor 172.24.14.1 remote-as 9050
+ neighbor 172.24.14.1 description MP-eBGP TELEKOM SP L3VPN VRF 2
+ neighbor 172.24.14.1 password 7 ***
+ neighbor 172.36.14.1 remote-as 9050
+ neighbor 172.36.14.1 description MP-eBGP ROMTELECOM SP L3VPN
+ neighbor 172.36.14.1 password 7 ***
+ neighbor 220.14.1.1 remote-as 65500
+ neighbor 220.14.1.1 description MP-iBGP to CT01_Constanta_RR Loopback0
+ neighbor 220.14.1.1 update-source Loopback0
+ !
+ address-family ipv4
+  no synchronization
+  redistribute connected
+  neighbor 172.24.14.1 activate
+  neighbor 172.24.14.1 send-community
+  neighbor 172.24.14.1 prefix-list no-crypto_in in
+  neighbor 172.24.14.1 prefix-list no-crypto_out out
+  neighbor 172.24.14.1 route-map only_HQ_originated_VDF in
+  neighbor 172.24.14.1 route-map localonly_TKR3 out
+  neighbor 172.36.14.1 activate
+  neighbor 172.36.14.1 send-community
+  neighbor 172.36.14.1 prefix-list no-crypto_in in
+  neighbor 172.36.14.1 prefix-list no-crypto_out out
+  neighbor 172.36.14.1 route-map only_HQ_originated_EQ_RTC in
+  neighbor 172.36.14.1 route-map localonly_TKR2 out
+  neighbor 220.14.1.1 activate
+  neighbor 220.14.1.1 send-community
+  no auto-summary
+ exit-address-family
+!
+no ip forward-protocol nd
+!
+ip community-list standard HQ-community permit 100
+ip as-path access-list 10 permit ^$
+no ip http server
+no ip http secure-server
+!
+ip tacacs source-interface GigabitEthernet0/0.3
+!
+ip access-list standard SNMPV3_RW
+ remark *** Acces SNMPV3 RW ***
+ permit 10.207.253.10 0.0.0.1
+ permit 10.207.253.12 0.0.0.1
+ deny   any log
+ip access-list standard VRF_2
+ permit 3.3.3.3
+ permit 1.3.54.97
+ip access-list standard VRF_3
+ permit 1.3.54.161
+ip access-list standard VTY
+ permit 10.207.253.10
+ permit 10.207.253.11
+ permit 10.207.253.12
+ permit 10.207.253.13
+ permit 10.207.253.100
+ permit 220.14.1.2
+ remark *** Access VTY ***
+ permit 172.19.251.0 0.0.0.31
+ deny   any log
+ip access-list standard user-lan
+ remark Only User-LAN, HAL & Loopback address to announce to SPs
+ permit 220.0.0.0 0.255.255.255
+ permit 223.0.0.0 0.255.255.255
+ permit 222.0.0.0 0.63.255.255
+!
+ip access-list extended ATM_IN
+ permit udp 223.128.0.76 0.63.255.3 eq 1985 host 224.0.0.102 eq 1985
+ permit tcp 223.128.0.64 0.63.255.15 any established
+ permit tcp 223.128.0.64 0.63.255.7 host 6.200.200.1 range 5000 7000
+ permit tcp 223.128.0.64 0.63.255.7 host 6.200.200.200 eq 18988
+ permit tcp 223.128.0.64 0.63.255.7 eq ftp-data host 6.200.200.200 gt 1024
+ permit tcp 223.128.0.64 0.63.255.7 host 10.208.101.1 eq www
+ permit tcp 223.128.0.64 0.63.255.7 host 10.208.101.1 eq 82
+ permit tcp 223.128.0.64 0.63.255.7 host 10.208.101.2 eq 8000
+ permit tcp 223.128.0.64 0.63.255.7 host 10.207.249.34 eq 22
+ permit tcp 223.128.0.64 0.63.255.7 eq ftp-data host 10.207.249.208 gt 1024
+ permit tcp 223.128.0.64 0.63.255.7 eq ftp-data 172.18.80.0 0.0.0.31 gt 1024
+ permit tcp 223.128.0.64 0.63.255.7 eq ftp-data 10.208.186.16 0.0.0.15 gt 1024
+ permit tcp 223.128.0.64 0.63.255.7 host 192.168.47.1 eq 443
+ permit tcp 223.128.0.64 0.63.255.7 host 10.207.249.183 eq 8080
+ permit tcp 223.128.0.64 0.63.255.7 host 10.208.40.240 eq 5443
+ permit tcp 223.128.0.64 0.63.255.7 host 10.206.81.10 eq 5443
+ permit tcp 223.128.0.64 0.63.255.7 host 10.208.40.240 eq 5779
+ permit tcp 223.128.0.64 0.63.255.7 host 10.207.249.56 eq 19000
+ permit tcp 223.128.0.72 0.63.255.1 host 10.207.248.86 eq 5070
+ permit tcp 223.128.0.72 0.63.255.1 host 10.207.248.32 range 2220 2224
+ permit tcp 223.128.0.74 0.63.255.0 host 10.207.248.38 eq 5071
+ permit tcp 223.128.0.74 0.63.255.0 eq ftp-data host 10.207.248.38 gt 1024
+ permit tcp 223.128.0.75 0.63.255.0 host 10.207.248.38 eq 5070
+ permit tcp 223.128.0.75 0.63.255.0 host 10.207.248.38 eq 5072
+ permit tcp 223.128.0.75 0.63.255.0 host 9.220.202.3 eq 1001
+ permit tcp 223.128.0.64 0.63.255.15 host 10.207.249.181
+ permit udp 223.128.0.64 0.63.255.15 host 10.207.249.181
+ permit tcp 223.128.0.64 0.63.255.15 host 10.207.249.182
+ permit udp 223.128.0.64 0.63.255.15 host 10.207.249.182
+ permit tcp 223.128.0.64 0.63.255.15 host 10.207.249.184 eq www
+ permit tcp 223.128.0.64 0.63.255.15 host 10.207.249.184 eq 443
+ permit udp 223.128.0.64 0.63.255.15 172.19.180.0 0.0.0.3 eq ntp
+ permit icmp 223.128.0.64 0.63.255.15 any echo-reply
+ deny   ip any any
+ip access-list extended ATM_OUT
+ permit tcp any 223.128.0.64 0.63.255.15 established
+ permit tcp host 6.200.200.200 223.128.0.64 0.63.255.7 eq 18988
+ permit tcp host 6.200.200.200 223.128.0.64 0.63.255.7 eq ftp
+ permit tcp host 10.208.101.1 223.128.0.64 0.63.255.7 eq 4242
+ permit tcp host 10.208.101.2 223.128.0.64 0.63.255.7 eq 1369
+ permit tcp host 10.207.249.208 223.128.0.64 0.63.255.7 eq ftp
+ permit tcp 172.18.80.0 0.0.0.31 223.128.0.64 0.63.255.7 eq ftp
+ permit tcp 10.208.186.16 0.0.0.15 223.128.0.64 0.63.255.7 eq ftp
+ permit tcp 172.18.80.0 0.0.0.31 223.128.0.72 0.63.255.1 eq www
+ permit tcp 10.208.186.16 0.0.0.15 223.128.0.72 0.63.255.1 eq www
+ permit tcp host 10.208.96.58 223.128.0.72 0.63.255.1 eq www
+ permit tcp 172.18.80.4 0.0.0.3 223.128.0.64 0.63.255.15 eq 3389
+ permit tcp 223.14.1.0 0.0.0.255 223.128.0.72 0.63.255.1 eq www
+ permit tcp host 10.207.248.38 223.128.0.74 0.63.255.0 eq ftp
+ permit tcp 10.208.224.0 0.0.0.255 223.128.0.72 0.63.255.1 eq www
+ permit tcp host 10.207.248.38 223.128.0.74 0.63.255.0 eq 21100
+ permit tcp host 10.207.248.38 223.128.0.74 0.63.255.0 eq 21200
+ permit tcp host 10.207.248.38 223.128.0.75 0.63.255.0 eq 21200
+ permit tcp host 10.207.249.181 223.128.0.64 0.63.255.15
+ permit udp host 10.207.249.181 223.128.0.64 0.63.255.15
+ permit tcp host 10.207.249.182 223.128.0.64 0.63.255.15
+ permit udp host 10.207.249.182 223.128.0.64 0.63.255.15
+ permit icmp any 223.128.0.64 0.63.255.15 echo
+ deny   ip any any
+ip access-list extended CDS_IN
+ permit udp 223.128.0.244 0.63.255.3 eq 1985 host 224.0.0.102 eq 1985
+ permit tcp 223.128.0.240 0.63.255.7 any established
+ permit tcp 223.128.0.240 0.63.255.7 host 192.168.47.65 eq 1433
+ permit tcp 223.128.0.240 0.63.255.7 host 10.208.80.69
+ permit udp 223.128.0.240 0.63.255.7 host 10.208.80.69
+ permit icmp 223.128.0.240 0.63.255.7 any echo-reply
+ deny   ip any any
+ip access-list extended CDS_OUT
+ permit tcp any 223.128.0.240 0.63.255.7 established
+ permit tcp 223.0.0.0 0.63.255.255 223.128.0.240 0.63.255.7 eq www
+ permit tcp 172.18.0.0 0.1.255.255 223.128.0.240 0.63.255.7 eq www
+ permit tcp 10.208.224.0 0.0.0.255 223.128.0.240 0.63.255.7 eq www
+ permit tcp host 192.168.47.65 223.128.0.240 0.63.255.7 eq www
+ permit tcp host 192.168.47.65 223.128.0.240 0.63.255.7 eq 1433
+ permit tcp host 192.168.47.65 223.128.0.240 0.63.255.7 eq 445
+ permit tcp host 192.168.47.65 223.128.0.240 0.63.255.7 eq 3389
+ permit tcp host 10.208.80.69 223.128.0.240 0.63.255.7
+ permit udp host 10.208.80.69 223.128.0.240 0.63.255.7
+ permit icmp any 223.128.0.240 0.63.255.7 echo
+ deny   ip any any
+ip access-list extended DVR_IN
+ permit udp 223.128.0.92 0.63.255.3 eq 1985 host 224.0.0.102 eq 1985
+ permit ip 223.128.0.80 0.63.255.15 223.178.2.32 0.0.0.31
+ permit ip 223.128.0.80 0.63.255.15 host 192.168.28.1
+ permit ip 223.128.0.80 0.63.255.15 host 192.168.28.2
+ permit ip 223.128.0.80 0.63.255.15 host 192.168.28.4
+ permit ip 223.128.0.80 0.63.255.15 192.168.28.96 0.0.0.7
+ permit ip 223.128.0.80 0.63.255.15 192.168.29.244 0.0.0.3
+ permit udp 223.128.0.80 0.63.255.15 172.19.180.0 0.0.0.3 eq ntp
+ permit icmp 223.128.0.80 0.63.255.15 any
+ deny   ip any any
+ip access-list extended QoS_D1
+ remark *** Match class D1 ***
+ permit ip 223.128.0.64 0.63.255.7 host 6.200.200.1
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.20
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.25
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.26
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.27
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.28
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.170
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.171
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.172
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.17.173
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.25
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.28
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.23
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.26
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.22
+ permit ip 223.0.0.0 0.255.255.255 host 10.206.81.36
+ permit ip 223.0.0.0 0.255.255.255 host 10.208.100.3
+ permit ip 223.0.0.0 0.255.255.255 host 192.168.21.37
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.11
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.13
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.14
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.15
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.249.84
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.249.85
+ip access-list extended QoS_D2
+ remark *** Match class D2 ***
+ permit ip 223.0.0.0 0.255.255.255 host 10.208.10.92
+ permit ip 223.0.0.0 0.255.255.255 host 10.208.80.10
+ permit ip 223.0.0.0 0.255.255.255 host 10.208.100.2
+ permit ip 223.0.0.0 0.255.255.255 host 10.208.10.75
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.5
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.201
+ permit ip 223.0.0.0 0.255.255.255 host 172.19.180.1
+ permit ip 223.0.0.0 0.255.255.255 host 172.19.180.2
+ permit ip 220.0.0.0 0.255.255.255 host 172.19.180.1
+ permit ip 220.0.0.0 0.255.255.255 host 172.19.180.2
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.14
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.15
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.1
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.2
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.7
+ permit ip 220.0.0.0 0.255.255.255 host 10.207.253.7
+ permit ip 223.0.0.0 0.255.255.255 10.207.253.8 0.0.0.3
+ permit ip 220.0.0.0 0.255.255.255 10.207.253.8 0.0.0.3
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.253.12
+ permit ip 220.0.0.0 0.255.255.255 host 10.207.253.12
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.140
+ permit ip 220.0.0.0 0.255.255.255 host 10.207.255.140
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.249.1
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.248.127
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.249.30
+ permit ip 223.0.0.0 0.255.255.255 host 10.207.255.67
+ip access-list extended wan_out
+ permit udp any any eq 848
+ permit esp any any
+ permit tcp any any eq bgp
+ permit tcp any eq bgp any
+ permit tcp any eq 22 any
+ permit tcp any any eq 22
+ permit tcp any any eq tacacs
+ permit tcp any eq tacacs any
+ permit udp any eq isakmp any eq isakmp
+ permit udp any eq 848 any eq 848
+ permit ip any 224.0.0.0 0.0.0.255
+ permit udp any any eq ntp
+ permit udp any eq ntp any
+ permit udp any any eq domain
+ permit udp any eq domain any
+ permit udp any any eq snmp
+ permit udp any eq snmp any
+ permit udp any any eq snmptrap
+ permit udp any eq snmptrap any
+ permit udp any any eq syslog
+ permit udp any eq syslog any
+ permit tcp any eq 443 any
+ permit tcp any any eq 443
+ permit tcp any host 10.207.247.4 eq www
+ permit tcp host 10.207.247.4 eq www any
+ permit tcp any host 10.207.247.6 eq www
+ permit tcp host 10.207.247.6 eq www any
+ permit icmp any any
+!
+!
+ip prefix-list no-crypto_in seq 10 permit 10.209.0.251/32
+ip prefix-list no-crypto_in seq 20 permit 10.209.1.251/32
+ip prefix-list no-crypto_in seq 30 permit 10.207.247.4/32
+ip prefix-list no-crypto_in seq 35 permit 10.207.247.6/32
+ip prefix-list no-crypto_in seq 40 permit 172.19.128.109/32
+ip prefix-list no-crypto_in seq 50 permit 10.207.253.11/32
+ip prefix-list no-crypto_in seq 60 permit 10.207.253.12/32
+ip prefix-list no-crypto_in seq 100 permit 0.0.0.0/0 le 32
+!
+ip prefix-list no-crypto_out seq 10 permit 220.14.1.2/32
+ip prefix-list no-crypto_out seq 100 permit 0.0.0.0/0 le 32
+ip sla responder
+logging source-interface Loopback0
+logging host 10.207.255.140 discriminator T11BUG
+access-list 80 remark *** NTP Servers ***
+access-list 80 permit 172.19.180.2
+access-list 80 permit 172.19.180.1
+access-list 80 deny   any log
+access-list 99 remark *** WAKE-ON LAN ***
+access-list 99 permit 10.207.255.46
+access-list 162 remark *** Match class D3 ***
+access-list 162 permit ip any any
+!
+!
+!
+!
+route-map only_HQ_originated_VDF permit 10
+ match community HQ-community
+!
+route-map localonly_TKR3 permit 10
+ description Only User-LAN, HAL & Loopback address to announce to SPs
+ match ip address user-lan
+ match as-path 10
+!
+route-map localonly_TKR3 permit 20
+ match ip address VRF_3
+!
+route-map localonly_TKR2 permit 10
+ description Only User-LAN, HAL & Loopback address to announce to SPs
+ match ip address user-lan
+ match as-path 10
+!
+route-map localonly_TKR2 permit 20
+ match ip address VRF_2
+!
+route-map only_HQ_originated_EQ_RTC permit 10
+ match community HQ-community
+ set local-preference 150
+!
+!
+snmp-server group RW_GROUP v3 priv write SNMPV3_RW access SNMPV3_RW
+snmp-server view SNMPV3_RW iso included
+snmp-server ifindex persist
+snmp-server trap-source Loopback0
+snmp-server source-interface informs Loopback0
+snmp-server location CONSTANTA
+snmp-server ip precedence 6
+snmp-server contact BCR_DOIIT_Retele
+snmp-server enable traps snmp linkdown linkup coldstart warmstart
+snmp-server enable traps envmon
+snmp-server enable traps flash insertion removal
+snmp-server enable traps bgp
+snmp-server enable traps rf
+snmp-server enable traps hsrp
+snmp-server enable traps cpu threshold
+snmp-server enable traps ipsla
+tacacs-server host 10.207.253.14 single-connection timeout 3 key 7 ***
+tacacs-server host 10.207.253.15 single-connection timeout 3 key 7 ***
+tacacs-server directed-request
+!
+control-plane
+ !
+!
+!
+!
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+banner login ^CC 
+******************************************************** 
+*                     ATENTIE!!!!                      * 
+*           ACEASTA ESTE O RETEA PRIVATA!              * 
+*        Accesul in acest sistem este interzis         * 
+*         cu exceptia personalului autorizat!          * 
+*      Informatiile continute in aceasta retea si      * 
+*  echipamente sunt private si apartin in intregime    * 
+*                   proprietarului.                    * 
+* ACCESUL DINCOLO DE ACEST PUNCT ESTE STRICT INTERZIS  * 
+*         CU EXCEPTIA PERSONALULUI AUTORIZAT!          * 
+*                                                      * 
+*  Daca nu sunteti autorizati deconectati-va imediat!  * 
+*    Toate tentativele de acces neautorizat vor fi     * 
+*              sanctionate conform legii.              * 
+******************************************************** 
+^C
+!
+line con 0
+ exec-timeout 30 0
+ privilege level 15
+ logging synchronous
+ transport preferred none
+line aux 0
+ access-class VTY in
+ exec-timeout 30 0
+ no exec
+ transport input telnet
+line vty 0 4
+ access-class VTY in
+ exec-timeout 30 0
+ logging synchronous
+ history size 256
+ transport preferred none
+ transport input ssh
+ transport output all
+line vty 5 15
+ access-class VTY in
+ exec-timeout 30 0
+ logging synchronous
+ history size 256
+ transport preferred none
+ transport input ssh
+ transport output none
+!
+scheduler allocate 30000 2000
+ntp source Loopback0
+ntp access-group peer 80
+ntp update-calendar
+ntp server 172.19.180.1 prefer
+ntp server 172.19.180.2
+event manager session cli username "EEM"
+event manager applet IPSecUP 
+ event snmp oid 1.3.6.1.4.1.9.9.171.1.3.1.1 get-type next entry-op gt entry-val "0" exit-op eq exit-val "0" poll-interval 1
+ action 10 syslog priority alerts msg "IPSec tunnels up: OID=$_snmp_oid_val"
+ action 20 cli command "enable"
+ action 30 cli command "configure terminal"
+ action 40 cli command "ip prefix-list no-crypto_in seq 100 permit 0.0.0.0/0 le 32"
+ action 50 cli command "ip prefix-list no-crypto_out seq 100 permit 0.0.0.0/0 le 32"
+ action 60 cli command "exit"
+ action 70 cli command "clear ip bgp * soft"
+event manager applet IPSecDN 
+ event snmp oid 1.3.6.1.4.1.9.9.171.1.3.1.1 get-type next entry-op eq entry-val "0" exit-op gt exit-val "0" poll-interval 1
+ action 10 syslog priority alerts msg "All IPSec tunnels down"
+ action 20 cli command "enable"
+ action 30 cli command "configure terminal"
+ action 40 cli command "no ip prefix-list no-crypto_in seq 100 permit 0.0.0.0/0 le 32"
+ action 50 cli command "no ip prefix-list no-crypto_out seq 100 permit 0.0.0.0/0 le 32"
+ action 60 cli command "exit"
+ action 70 cli command "clear ip bgp * soft"
+event manager applet REG_FAIL_GDOI 
+ event syslog occurs 2 pattern "%CRYPTO-5-GM_REGSTER: Start registration to KS 10.209.1.251" period 190
+ action 10 syslog priority warnings msg "Registration to all Key Servers Failed"
+ action 20 cli command "enable"
+ action 30 cli command "clear cry gdoi" pattern "\[yes/no\]"
+ action 40 cli command "yes"
+!
+end
+
